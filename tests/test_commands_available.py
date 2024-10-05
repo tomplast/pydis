@@ -60,8 +60,9 @@ def test_command_get_is_available(client):
     assert client.command_is_available("get")
 
 
-def test_command_getset_is_available(client):
-    assert client.command_is_available("getset")
+# Deprecated since Redis version 6.2.0
+#    def test_command_getset_is_available(client):
+#    assert client.command_is_available("getset")
 
 
 def test_command_incr_is_available(client):
