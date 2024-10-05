@@ -73,6 +73,21 @@ class RedisClient:
 
         return arguments[1]
 
+    def keys(self, pattern):
+        response = self._send_and_receive("KEYS", pattern).decode("ascii")
+        arguments = response.split("\r\n")
+
+        number_of_arguments = int(arguments[0][1:])
+
+        if number_of_arguments == 0:
+            return []
+
+        keys = []
+        for i in range(2, len(arguments) - 1, 2):
+            keys.append(arguments[i])
+
+        return keys
+
     def quit(self):
         return self._send_and_receive("QUIT", "")
 

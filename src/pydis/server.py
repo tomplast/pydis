@@ -91,6 +91,18 @@ class RedisProtocol(asyncio.Protocol):
 
         self._transport.write(f"${len(d)}\r\n{d}\r\n".encode())
 
+    def _run_KEYS(self, pattern):
+        if pattern != "*":
+            raise NotImplementedError("Only * supported")
+
+        keys = [x for x in _data.keys()]
+
+        response = f"*{len(keys)}\r\n"
+        for k in keys:
+            response += f"${len(k)}\r\n{k}\r\n"
+
+        self._transport.write(response.encode("ascii"))
+
     def _run_PING(self, data):
         if len(data) > 0:
             self._transport.write(
