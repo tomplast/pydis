@@ -78,6 +78,15 @@ class RedisClient:
         arguments = response.split("\r\n")
         return int(arguments[0][1:])
 
+    def random_key(self) -> str:
+        response = self._send_and_receive("LASTSAVE", "").decode("ascii")
+        arguments = response.split("\r\n")
+
+        if arguments[0] == "$-1":
+            return None
+
+        return arguments[1]
+
     def keys(self, pattern):
         response = self._send_and_receive("KEYS", pattern).decode("ascii")
         arguments = response.split("\r\n")

@@ -1,5 +1,6 @@
 import asyncio
 import warnings
+import random
 
 try:
     pass
@@ -97,6 +98,15 @@ class RedisProtocol(asyncio.Protocol):
         d = _data[data]
 
         self._transport.write(f"${len(d)}\r\n{d}\r\n".encode())
+
+    def _run_RANDOMKEY(self, _):
+        if len(_data) == 0:
+            self._transport.write(b"$-1\r\n")
+            return
+
+        random_key = random.choice(_data)
+
+        self._transport.write(f"${len(random_key)}\r\n{random_key}\r\n".encode())
 
     def _run_LASTSAVE(self, _):
         self._transport.write(f":{_last_successful_db_timestamp}\r\n".encode("ascii"))
