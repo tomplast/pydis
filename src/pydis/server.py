@@ -80,6 +80,12 @@ class RedisProtocol(asyncio.Protocol):
 
         self._transport.write(b"+OK\r\n")
 
+    def _run_EXISTS(self, key):
+        if key in _data:
+            self._transport.write(b":1\r\n")
+        else:
+            self._transport.write(b":0\r\n")
+
     def _run_GET(self, data):
         global _data
 
