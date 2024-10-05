@@ -57,6 +57,8 @@ class RedisClient:
         assert "+OK" in response
 
     def set(self, key, value):
+        if not value.startswith('"'):
+            value = f'"{value}"'
         response = self._send_and_receive("SET", key + " " + value).decode("ascii")
         assert "+OK" in response
 
