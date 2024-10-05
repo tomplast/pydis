@@ -8,6 +8,7 @@ except:
 
 
 _data = {}
+_last_successful_db_timestamp = 0
 
 
 class RedisProtocol(asyncio.Protocol):
@@ -96,6 +97,9 @@ class RedisProtocol(asyncio.Protocol):
         d = _data[data]
 
         self._transport.write(f"${len(d)}\r\n{d}\r\n".encode())
+
+    def _run_LASTSAVE(self, _):
+        self._transport.write(f":{_last_successful_db_timestamp}\r\n".encode("ascii"))
 
     def _run_KEYS(self, pattern):
         if pattern != "*":

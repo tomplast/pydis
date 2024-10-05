@@ -73,6 +73,11 @@ class RedisClient:
 
         return arguments[1]
 
+    def last_save(self):
+        response = self._send_and_receive("LASTSAVE", "").decode("ascii")
+        arguments = response.split("\r\n")
+        return int(arguments[0][1:])
+
     def keys(self, pattern):
         response = self._send_and_receive("KEYS", pattern).decode("ascii")
         arguments = response.split("\r\n")
