@@ -41,6 +41,28 @@ class RedisProtocol(asyncio.Protocol):
                 ).encode()
             )
 
+    def _run_SADD(self, arguments):
+        global _data
+        key, members = arguments.split(" ", maxsplit=1)
+
+        if key not in _data:
+            _data[key] = set()
+
+        changed_count = 0
+
+        if type(_data[key]) is not set:
+            self._transport.write(
+                b"-WRONGTYPE Operation against a key holding the wrong kind of value\r\n"
+            )
+            return
+
+        for member in members.split(" "):
+            if key not in _data[key]:
+                changed_count += 1
+                _data[key].add(member)
+
+        self._transport.write(f":{changed_count}\r\n".encode())
+
     def _run_SHUTDOWN(self, data):
         self._shutdown_event.set()
         self._transport.close()

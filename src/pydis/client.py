@@ -73,6 +73,15 @@ class RedisClient:
 
         return arguments[1]
 
+    def sadd(self, key, members: list[str]):
+        response = self._send_and_receive("SADD", f"{key} {' '.join(members)}").decode(
+            "ascii"
+        )
+        arguments = response.split("\r\n")
+        if response.startswith("-"):
+            raise Exception(arguments[0])
+        return int(arguments[0][1:])
+
     def last_save(self):
         response = self._send_and_receive("LASTSAVE", "").decode("ascii")
         arguments = response.split("\r\n")
