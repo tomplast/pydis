@@ -78,6 +78,12 @@ class RedisClient:
         arguments = response.split("\r\n")
         return int(arguments[0][1:])
 
+    def delete(self, keys: list[str]):
+        response = self._send_and_receive("DEL", " ".join(keys)).decode("ascii")
+        #
+        # FIX!
+        assert "-Err" not in response
+
     def incrby(self, key, increment: int):
         response = self._send_and_receive("INCRBY", f"{key} {increment}").decode(
             "ascii"

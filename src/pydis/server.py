@@ -106,6 +106,14 @@ class RedisProtocol(asyncio.Protocol):
             _data[key] = int(_data[key]) + value
         self._transport.write(f":{_data[key]}\r\n".encode("ascii"))
 
+    def _run_DEL(self, arguments):
+        global _data
+        for k in arguments.split(" "):
+            if k in _data:
+                del _data[k]
+
+        self._transport.write(b"+OK\r\n")
+
     def _run_DECR(self, key):
         global _data
         if key not in _data:
