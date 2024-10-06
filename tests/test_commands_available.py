@@ -233,8 +233,9 @@ def test_command_srem_is_available(client):
     assert client.command_is_available("srem")
 
 
-def test_command_substr_is_available(client):
-    assert client.command_is_available("substr")
+# Deprecated since REDIS 2.0.0
+# def test_command_substr_is_available(client):
+#    assert client.command_is_available("substr")
 
 
 def test_command_sunion_is_available(client):
