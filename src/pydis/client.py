@@ -78,6 +78,32 @@ class RedisClient:
         arguments = response.split("\r\n")
         return int(arguments[0][1:])
 
+    def incrby(self, key, increment: int):
+        response = self._send_and_receive("INCRBY", f"{key} {increment}").decode(
+            "ascii"
+        )
+        arguments = response.split("\r\n")
+
+        if arguments[0].startswith("-ERR"):
+            raise Exception(arguments[0])
+
+        new_value = int(arguments[0][1:])
+
+        return new_value
+
+    def decrby(self, key, decrement: int):
+        response = self._send_and_receive("DECRBY", f"{key} {decrement}").decode(
+            "ascii"
+        )
+        arguments = response.split("\r\n")
+
+        if arguments[0].startswith("-ERR"):
+            raise Exception(arguments[0])
+
+        new_value = int(arguments[0][1:])
+
+        return new_value
+
     def incr(self, key):
         response = self._send_and_receive("INCR", key).decode("ascii")
         arguments = response.split("\r\n")
