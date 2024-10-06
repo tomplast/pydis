@@ -56,6 +56,20 @@ class RedisProtocol(asyncio.Protocol):
             f"${len(data) - 2}\r\n".encode("ascii") + data.encode("ascii")
         )
 
+    def _run_DECR(self, key):
+        global _data
+        if key not in _data:
+            _data[key] = -1
+        else:
+            if not _data[key].isdigit():
+                self._transport.write(
+                    b"-ERR value is not an integer or out of range\r\n"
+                )
+                return
+
+            _data[key] = int(_data[key]) - 1
+        self._transport.write(f":{_data[key]}\r\n".encode("ascii"))
+
     def _run_INCR(self, key):
         global _data
         if key not in _data:

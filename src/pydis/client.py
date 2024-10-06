@@ -89,6 +89,17 @@ class RedisClient:
 
         return new_value
 
+    def decr(self, key):
+        response = self._send_and_receive("DECR", key).decode("ascii")
+        arguments = response.split("\r\n")
+
+        if arguments[0].startswith("-ERR"):
+            raise Exception(arguments[0])
+
+        new_value = int(arguments[0][1:])
+
+        return new_value
+
     def random_key(self) -> str:
         response = self._send_and_receive("LASTSAVE", "").decode("ascii")
         arguments = response.split("\r\n")
